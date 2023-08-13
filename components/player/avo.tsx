@@ -1,9 +1,9 @@
+import { AvoActionName } from "@/types/player"
+import { useAnimations, useGLTF } from "@react-three/drei"
+import { useGraph } from "@react-three/fiber"
+import { useEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
-import React, { useEffect, useMemo, useRef } from "react"
-import { useGLTF, useAnimations } from "@react-three/drei"
 import { GLTF, SkeletonUtils } from "three-stdlib"
-import { useFrame, useGraph } from "@react-three/fiber"
-import { useControls } from "@/hooks/useControls"
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -33,65 +33,27 @@ type GLTFResult = GLTF & {
   }
 }
 
-type ActionName = "idle" | "run" | "wave"
-type GLTFActions = Record<ActionName, THREE.AnimationAction>
+type GLTFActions = Record<AvoActionName, THREE.AnimationAction>
 
-const SPEED = 0.05
-
-export default function Avo(props: JSX.IntrinsicElements["group"]) {
+export default function Avo(props: JSX.IntrinsicElements["group"] & { anim: AvoActionName }) {
   const player = useRef<THREE.Group | null>(null)
   const { materials, animations, scene } = useGLTF("/models/avo.glb") as GLTFResult
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes } = useGraph(clone) as GLTFResult
   const { actions, mixer } = useAnimations(animations, player)
-  // const anim = useRef<ActionName>("idle")
-  const { up, down, left, right } = useControls()
-  const anim = useMemo<ActionName>(() => {
-    return up || down || left || right ? "run" : "idle"
-  }, [up, down, left, right])
-
-  useFrame(({ camera }) => {
-    if (!player.current) return
-
-    if (up) {
-      player.current.position.z -= SPEED
-      player.current.rotation.set(0, Math.PI, 0)
-      camera.position.z -= SPEED
-    }
-
-    if (down) {
-      player.current.position.z += SPEED
-      player.current.rotation.set(0, 0, 0)
-      camera.position.z += SPEED
-    }
-
-    if (left) {
-      player.current.position.x -= SPEED
-      player.current.rotation.set(0, -Math.PI / 2 + (up ? -Math.PI / 4 : down ? Math.PI / 4 : 0), 0)
-      camera.position.x -= SPEED
-    }
-
-    if (right) {
-      player.current.position.x += SPEED
-      player.current.rotation.set(0, Math.PI / 2 + (up ? Math.PI / 4 : down ? -Math.PI / 4 : 0), 0)
-      camera.position.x += SPEED
-    }
-
-    camera.lookAt(player.current.position.clone().setY(1))
-  })
 
   useEffect(() => {
-    ;(actions as GLTFActions)[anim].reset().fadeIn(0.2).play()
+    props.anim && (actions as GLTFActions)[props.anim].reset().fadeIn(0.2).play()
 
     return () => {
-      ;(actions as GLTFActions)[anim].fadeOut(0.2)
+      props.anim && (actions as GLTFActions)[props.anim].fadeOut(0.2)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [anim])
+  }, [props.anim])
 
   return (
-    <group ref={player} {...props} dispose={null}>
+    <group ref={player} {...props} dispose={null} position={[0, -0.1, 0]} scale={[0.5, 0.5, 0.5]}>
       <group name="Scene">
         <group name="Armature">
           <primitive object={nodes.mixamorigHips} />
