@@ -46,7 +46,7 @@ export default function Avo(props: JSX.IntrinsicElements["group"] & { anim: AvoA
     props.anim && (actions as GLTFActions)[props.anim].reset().fadeIn(0.2).play()
 
     return () => {
-      props.anim && (actions as GLTFActions)[props.anim].fadeOut(0.2)
+      ;(actions as GLTFActions)[props.anim]?.fadeOut(0.2)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

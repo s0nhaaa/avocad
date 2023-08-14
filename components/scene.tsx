@@ -1,6 +1,6 @@
 import { auth, database } from "@/services/firebase"
 import usePlayerStore from "@/stores/player"
-import { PerspectiveCamera } from "@react-three/drei"
+import { Environment, PerspectiveCamera } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { onAuthStateChanged, signInAnonymously } from "firebase/auth"
@@ -85,6 +85,7 @@ export default function Scene() {
     <div className="w-screen h-screen bg-base-100">
       <Canvas>
         <ambientLight intensity={1} />
+        <Environment files="outdoor.hdr" />
 
         <PerspectiveCamera makeDefault position={[0, 5, 10]} />
         <MainPlayer uid={mainPlayerUid} />
