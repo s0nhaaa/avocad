@@ -19,42 +19,7 @@ export default function Scene() {
   const { publicKey } = useWallet()
 
   useEffect(() => {
-    signInAnonymously(auth)
-      .then(() => {
-        setIsSignIn(true)
-      })
-      .catch((error) => {
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.log(errorCode, errorMessage)
-      })
-  }, [])
-
-  useEffect(() => {
     let uid: string
-
-    // publicKey &&
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        uid = user.uid
-
-        setMainPlayerUid(uid)
-        await set(ref(database, `players/${uid}`), {
-          id: uid,
-          position: {
-            x: 0,
-            y: 0,
-            z: 0,
-          },
-          quaternion: {
-            x: 0,
-            y: 0,
-            z: 0,
-            w: 0,
-          },
-        }).catch((error) => {})
-      }
-    })
 
     onValue(ref(database, "players"), (snapshot) => {
       setPlayers(snapshot.val())
@@ -66,23 +31,8 @@ export default function Scene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (!isSignIn) return
-
-    onValue(
-      ref(database, "players"),
-      (snapshot) => {
-        setPlayers(snapshot.val())
-      },
-      {
-        onlyOnce: true,
-      }
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSignIn, publicKey])
-
   return (
-    <div className="w-screen h-screen bg-base-100">
+    <div className="w-screen h-screen bg-white">
       <Canvas>
         <ambientLight intensity={1} />
         <Environment files="outdoor.hdr" />

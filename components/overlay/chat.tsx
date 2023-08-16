@@ -36,12 +36,12 @@ export default function Chat() {
   }, [messages])
 
   return (
-    <div className="absolute bottom-6 left-6 w-[400px] h-[300px] bg-base-100 rounded-2xl p-4">
+    <div className="absolute bottom-6 left-6 w-[450px] h-[300px] bg-base-100 rounded-2xl p-4">
       <div className="relative w-full h-full">
         <div className="w-full flex flex-col overflow-auto h-[calc(100%-60px)] rounded-lg p-1">
           {messages &&
             Object.values(messages).map((message, index) => (
-              <span ref={bottomRef} className=" text-neutral/60" key={index}>
+              <span ref={bottomRef} className="" key={index}>
                 <span className="font-bold text-accent">{message.name}: </span> {message.message}
               </span>
             ))}
@@ -50,7 +50,7 @@ export default function Chat() {
           <input
             type="text"
             placeholder="Type here"
-            className="input input-bordered w-full text-neutral"
+            className="input input-bordered w-full"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
