@@ -1,6 +1,4 @@
 export type Player = {
-  id: string
-  walletAddress: string
   position: {
     x: number
     y: number
@@ -12,7 +10,9 @@ export type Player = {
     z: number
     w: number
   }
+  username: string
   animation: AvoActionName
+  address: string
 }
 
 export type Players = {

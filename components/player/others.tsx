@@ -1,4 +1,4 @@
-import { AvoActionName, Players } from "@/types/player"
+import { Player, Players } from "@/types/player"
 import { Html } from "@react-three/drei"
 import { useFrame } from "@react-three/fiber"
 import { useRef } from "react"
@@ -7,7 +7,7 @@ import Avo from "./avo"
 
 type PlayerProps = {
   players: Players | undefined
-  mainPlayerId: string
+  mainPlayerId: string | undefined
 }
 
 const nextPosition = new Vector3()
@@ -18,36 +18,19 @@ export default function OtherPlayers(props: PlayerProps) {
     <>
       {props.players &&
         Object.values(props.players).map((player) => (
-          <>
-            {player.id !== props.mainPlayerId && (
-              <Other
-                animation={player.animation}
-                key={player.id}
-                position={player.position}
-                quaternion={player.quaternion}
-                walletAddress={player.walletAddress}
-              />
-            )}
-          </>
+          <>{player.address !== props.mainPlayerId && <Other player={player} key={player.address} />}</>
         ))}
     </>
   )
 }
 
-type OtherProps = {
-  walletAddress: Players["id"]["walletAddress"]
-  position: Players["id"]["position"]
-  quaternion: Players["id"]["quaternion"]
-  animation: AvoActionName
-}
-
-function Other(props: OtherProps) {
+function Other({ player }: { player: Player }) {
   const playerRef = useRef<Group>(null)
 
   useFrame(() => {
     if (playerRef.current) {
-      nextPosition.fromArray([props.position.x, props.position.y, props.position.z])
-      nextQuaternion.fromArray([props.quaternion.x, props.quaternion.y, props.quaternion.z, props.quaternion.w])
+      nextPosition.fromArray([player.position.x, player.position.y, player.position.z])
+      nextQuaternion.fromArray([player.quaternion.x, player.quaternion.y, player.quaternion.z, player.quaternion.w])
       playerRef.current.position.lerp(nextPosition, 0.5)
       playerRef.current.quaternion.rotateTowards(nextQuaternion, 0.4)
     }
@@ -55,9 +38,12 @@ function Other(props: OtherProps) {
 
   return (
     <group ref={playerRef}>
-      <Avo anim={props.animation} />
+      <Avo anim={player.animation} />
       <Html position={[0, 2, 0]} center>
-        <span className="px-3 py-2 rounded-lg bg-base-200 select-none">Hey</span>
+        <div className="px-3 pb-2 pt-1 rounded-lg bg-base-200 select-none">
+          <div className="badge badge-accent badge-sm mt-2 font-medium">$GUAC hodler</div>
+          <span className="">{player.username}</span>
+        </div>
       </Html>
     </group>
   )

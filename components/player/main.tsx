@@ -6,27 +6,29 @@ import * as THREE from "three"
 import Avo from "./avo"
 import { ref, set, update } from "firebase/database"
 import { database } from "@/services/firebase"
+import { useWallet } from "@solana/wallet-adapter-react"
 
 const SPEED = 0.05
 const OFFSET = 5
 
 type MainPlayerProps = {
-  uid: string
+  id: string | undefined
 }
 
 export default function MainPlayer(props: MainPlayerProps) {
   const player = useRef<THREE.Group | null>(null)
   const { up, down, left, right } = useControls()
+
   const anim = useMemo<AvoActionName>(() => {
     let a = up || down || left || right ? "run" : "idle"
 
-    props.uid &&
-      update(ref(database, `players/${props.uid}`), {
+    props.id &&
+      update(ref(database, `players/${props.id}`), {
         animation: a,
       })
 
     return a as AvoActionName
-  }, [up, down, left, right, props.uid])
+  }, [up, down, left, right, props.id])
   const frames = useRef(0)
 
   useFrame(({ camera }) => {
@@ -47,7 +49,7 @@ export default function MainPlayer(props: MainPlayerProps) {
       right && player.current.rotation.set(0, Math.PI / 2 + (up ? Math.PI / 4 : down ? -Math.PI / 4 : 0), 0)
 
       if (frames.current % OFFSET === 0) {
-        update(ref(database, `players/${props.uid}`), {
+        update(ref(database, `players/${props.id}`), {
           position: {
             x: player.current.position.x,
             y: player.current.position.y,

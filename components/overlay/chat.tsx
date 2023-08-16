@@ -1,3 +1,4 @@
+import useMainPlayer from "@/hooks/useMainPlayer"
 import { database } from "@/services/firebase"
 import { onValue, orderByChild, push, query, ref, update } from "firebase/database"
 import { Send } from "lucide-react"
@@ -13,12 +14,13 @@ export default function Chat() {
   const [message, setMessage] = useState("")
   const [messages, setMessages] = useState<Record<string, Message>>({})
   const bottomRef = useRef<HTMLDivElement>(null)
+  const [username] = useMainPlayer((state) => [state.username])
 
   const sendMessage = async (message: string) => {
     if (!message) return
 
-    await update(push(ref(database, `chat`)), {
-      name: "sh",
+    await update(push(ref(database, `chats`)), {
+      name: username,
       message,
       timestamp: Date.now(),
     }).catch((error) => {})
@@ -26,7 +28,7 @@ export default function Chat() {
   }
 
   useEffect(() => {
-    onValue(query(ref(database, "chat"), orderByChild("timestamp")), (snapshot) => {
+    onValue(query(ref(database, "chats"), orderByChild("timestamp")), (snapshot) => {
       setMessages(snapshot.val())
     })
   }, [])
@@ -56,7 +58,7 @@ export default function Chat() {
           />
           <button
             className="btn btn-square btn-md btn-success text-lg hover:cursor-c-pointer active:cursor-c-pointer-clicked"
-            onClick={() => sendMessage("🥑")}
+            onClick={() => sendMessage("🥑 BARS")}
           >
             🥑
           </button>

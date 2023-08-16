@@ -1,59 +1,29 @@
-import { auth, database } from "@/services/firebase"
-import usePlayerStore from "@/stores/player"
-import { useWallet } from "@solana/wallet-adapter-react"
-import { onValue, ref, remove, set } from "firebase/database"
-import { useEffect, useState } from "react"
+import useLogin from "@/hooks/useLogin"
 import Overlay from "./overlay"
-import ConnectWallet from "./overlay/connect-wallet"
+import Login from "./overlay/login"
 import Scene from "./scene"
-import { onAuthStateChanged, signInAnonymously } from "firebase/auth"
+import { useEffect } from "react"
+import { useWallet } from "@solana/wallet-adapter-react"
+import useMainPlayer from "@/hooks/useMainPlayer"
 
 export default function App() {
-  const [logedIn, setLogedIn] = usePlayerStore((s) => [s.logedIn, s.setLogedIn])
-  const [players, setPlayers] = usePlayerStore((state) => [state.players, state.setPlayers])
-  const [mainPlayerUid, setMainPlayerUid] = useState("")
-  const { connected } = useWallet()
-
-  // useEffect(() => {
-  //   signInAnonymously(auth)
-  //     .then(() => {
-  //       setLogedIn(true)
-  //     })
-  //     .catch((error) => {
-  //       const errorCode = error.code
-  //       const errorMessage = error.message
-  //       console.log(errorCode, errorMessage)
-  //     })
-  // }, [])
+  const [logedIn, login, logout] = useLogin((s) => [s.logedIn, s.login, s.logout])
+  const { publicKey } = useWallet()
+  const user = useMainPlayer()
 
   useEffect(() => {
-    // if (connected) {
-    //   signInAnonymously(auth)
-    //     .then(() => {
-    //       setLogedIn(connected)
-    //     })
-    //     .catch((error) => {
-    //       const errorCode = error.code
-    //       const errorMessage = error.message
-    //       console.log(errorCode, errorMessage)
-    //     })
-    //   onValue(
-    //     ref(database, "players"),
-    //     (snapshot) => {
-    //       setPlayers(snapshot.val())
-    //     },
-    //     {
-    //       onlyOnce: true,
-    //     }
-    //   )
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connected])
+    if (!publicKey) return
+
+    user.checkExisted(publicKey.toString())
+    console.log(user.existed)
+
+    user.existed ? login() : logout()
+  }, [publicKey, user.existed])
 
   return (
     <>
       {!logedIn ? (
-        <ConnectWallet />
+        <Login />
       ) : (
         <>
           <Scene />
