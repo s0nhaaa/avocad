@@ -17,6 +17,7 @@ export default function Login() {
 
     user.checkExisted(publicKey.toString())
     user.existed ? login() : logout()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, user.existed])
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function Login() {
 
     user.create(formatAddress(publicKey.toString()), publicKey.toString())
     login()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey])
 
   return (
@@ -50,25 +52,3 @@ export default function Login() {
     </>
   )
 }
-
-// if (!snapshot.val()) {
-//   set(ref(database, `players/${publicKey.toString()}`), {
-//     position: {
-//       x: 0,
-//       y: 0,
-//       z: 0,
-//     },
-//     quaternion: {
-//       x: 0,
-//       y: 0,
-//       z: 0,
-//       w: 0,
-//     },
-//     username: mainUsername,
-//     animation: "idle",
-//   })
-//   setExisted(true)
-// } else {
-//   setExisted(true)
-//   setMainUsername(snapshot.val().username)
-// }

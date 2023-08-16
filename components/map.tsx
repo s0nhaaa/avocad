@@ -23,10 +23,10 @@ export default function Map(props: JSX.IntrinsicElements["group"]) {
   return (
     <group {...props} dispose={null}>
       <group position={[19.1, 0, -0.105]}>
-        <mesh geometry={nodes.Cube027.geometry} material={materials["Green.004"]} />
-        <mesh geometry={nodes.Cube027_1.geometry} material={materials["BrownDark.015"]} />
-        <mesh geometry={nodes.Cube027_2.geometry} material={materials["Beige.007"]} />
-        <mesh geometry={nodes.Cube027_3.geometry} material={materials["BrownDark.014"]} />
+        <mesh castShadow receiveShadow geometry={nodes.Cube027.geometry} material={materials["Green.004"]} />
+        <mesh castShadow receiveShadow geometry={nodes.Cube027_1.geometry} material={materials["BrownDark.015"]} />
+        <mesh castShadow receiveShadow geometry={nodes.Cube027_2.geometry} material={materials["Beige.007"]} />
+        <mesh castShadow receiveShadow geometry={nodes.Cube027_3.geometry} material={materials["BrownDark.014"]} />
       </group>
     </group>
   )

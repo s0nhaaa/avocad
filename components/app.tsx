@@ -15,9 +15,8 @@ export default function App() {
     if (!publicKey) return
 
     user.checkExisted(publicKey.toString())
-    console.log(user.existed)
-
     user.existed ? login() : logout()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, user.existed])
 
   return (
