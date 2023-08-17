@@ -3,7 +3,6 @@ import { useAnimations, useGLTF } from "@react-three/drei"
 import { useGraph } from "@react-three/fiber"
 import { useEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
-import { BackSide } from "three"
 import { GLTF, SkeletonUtils } from "three-stdlib"
 
 type GLTFResult = GLTF & {
@@ -55,7 +54,7 @@ export default function Avo(props: JSX.IntrinsicElements["group"] & { anim: AvoA
   }, [props.anim])
 
   return (
-    <group ref={player} {...props} dispose={null} position={[0, -0.09, 0]} scale={[0.5, 0.5, 0.5]}>
+    <group ref={player} {...props} dispose={null} position={[0, -0.08, 0]} scale={[0.5, 0.5, 0.5]}>
       <group name="Scene">
         <group name="Armature">
           <primitive object={nodes.mixamorigHips} />

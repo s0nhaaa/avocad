@@ -1,14 +1,13 @@
 import { useControls } from "@/hooks/useControls"
+import { database } from "@/services/firebase"
 import { AvoActionName } from "@/types/player"
 import { useFrame } from "@react-three/fiber"
+import { ref, update } from "firebase/database"
 import { useMemo, useRef } from "react"
 import * as THREE from "three"
 import Avo from "./avo"
-import { ref, set, update } from "firebase/database"
-import { database } from "@/services/firebase"
-import { useWallet } from "@solana/wallet-adapter-react"
-
-const SPEED = 0.05
+// XPRd0jb
+const SPEED = 0.1
 const OFFSET = 5
 
 type MainPlayerProps = {

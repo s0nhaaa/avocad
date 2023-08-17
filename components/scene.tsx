@@ -1,53 +1,19 @@
-import { auth, database } from "@/services/firebase"
+import { database } from "@/services/firebase"
 import usePlayerStore from "@/stores/player"
-import { Environment, PerspectiveCamera, shaderMaterial } from "@react-three/drei"
-import { Canvas, extend, useThree } from "@react-three/fiber"
+import { OrbitControls, PerspectiveCamera, Torus } from "@react-three/drei"
+import { Canvas } from "@react-three/fiber"
 import { useWallet } from "@solana/wallet-adapter-react"
-import { onAuthStateChanged, signInAnonymously } from "firebase/auth"
-import { onValue, ref, remove, set } from "firebase/database"
-import { useEffect, useMemo, useState } from "react"
-import Map from "./map"
+import { onValue, ref, remove } from "firebase/database"
+import { Suspense, useEffect } from "react"
+import { Map } from "./map"
 import MainPlayer from "./player/main"
 import OtherPlayers from "./player/others"
-import useMainPlayer from "@/hooks/useMainPlayer"
-import { DataTexture, LuminanceFormat, RedFormat, Layers, BackSide } from "three"
-import { Selection, Select, EffectComposer, Outline } from "@react-three/postprocessing"
-import Avo from "./player/avo"
-
-function S() {
-  const gl = useThree((s) => s.gl)
-
-  const gradientMap = useMemo(() => {
-    const alphaIndex = 0
-    const format = gl.capabilities.isWebGL2 ? RedFormat : LuminanceFormat
-
-    const colors = new Uint8Array(alphaIndex + 2)
-    for (let c = 0; c <= colors.length; c++) {
-      colors[c] = (c / colors.length) * 256
-    }
-    const gradientMap = new DataTexture(colors, colors.length, 1, format)
-    gradientMap.needsUpdate = true
-    return gradientMap
-  }, [gl])
-
-  return (
-    <group>
-      <mesh>
-        <sphereGeometry />
-        {/* <meshToonMaterial color={"#ffaa00"} gradientMap={gradientMap} /> */}
-      </mesh>
-      <mesh scale={1.02}>
-        <sphereGeometry />
-        <meshBasicMaterial color={"#000000"} side={BackSide} />
-      </mesh>
-    </group>
-  )
-}
+import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier"
+import MainPlayerPhysic from "./player/main-physic"
+import { MapPhysic } from "./map-physic"
 
 export default function Scene() {
   const [players, setPlayers] = usePlayerStore((state) => [state.players, state.setPlayers])
-  const user = useMainPlayer()
-
   const { publicKey } = useWallet()
 
   useEffect(() => {
@@ -62,19 +28,26 @@ export default function Scene() {
   }, [])
 
   return (
-    <div className="w-screen h-screen bg-white">
+    <div className="w-screen h-screen bg-gradient-to-b from-emerald-300 from-10% to-emerald-500 to-90%">
       <Canvas>
-        <ambientLight intensity={1} />
-        {/* <directionalLight castShadow position={[1, 1, 1]} intensity={0.8} /> */}
-
+        <ambientLight intensity={2} />
+        <OrbitControls />
         <PerspectiveCamera makeDefault position={[0, 5, 10]} castShadow />
-        <MainPlayer id={publicKey?.toString()} />
+
+        <Suspense>
+          <Physics debug gravity={[0, -9.82, 0]}>
+            <MainPlayerPhysic id={publicKey?.toString()} />
+            <MapPhysic position={[0, -1, 0]} />
+
+            {/* <CuboidCollider position={[0, -0.5, 0]} args={[20, 0.5, 20]} /> */}
+          </Physics>
+        </Suspense>
+
+        {/* <MainPlayer id={publicKey?.toString()} /> */}
 
         <OtherPlayers players={players} mainPlayerId={publicKey?.toString()} />
 
-        <Map position={[0, -1, 0]} />
-
-        {/* <S /> */}
+        {/* <Map position={[0, -1, 0]} /> */}
       </Canvas>
     </div>
   )
