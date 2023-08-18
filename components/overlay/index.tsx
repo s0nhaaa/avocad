@@ -1,5 +1,6 @@
 import Chat from "./chat"
 import DisconnectWallet from "./disconnect-wallet"
+import MaterialIntersect from "./material-intersect"
 import Me from "./me"
 import Ranking from "./ranking"
 import Recipe from "./recipe"
@@ -13,6 +14,8 @@ export default function Overlay() {
       <Chat />
       <Settings />
       <Recipe />
+
+      <MaterialIntersect />
       {/*<Ranking />
        */}
     </div>

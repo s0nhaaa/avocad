@@ -26,7 +26,7 @@ export default function App() {
       ) : (
         <>
           <Scene />
-          {/* <Overlay /> */}
+          <Overlay />
         </>
       )}
     </>
