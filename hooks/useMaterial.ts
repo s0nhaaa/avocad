@@ -6,6 +6,9 @@ type MaterialState = {
 
   material: string
   setMaterial: (material: string) => void
+
+  position: string
+  setPosition: (position: string) => void
 }
 
 const useMaterial = create<MaterialState>((set) => ({
@@ -14,6 +17,9 @@ const useMaterial = create<MaterialState>((set) => ({
 
   material: "",
   setMaterial: (material: string) => set({ material }),
+
+  position: "",
+  setPosition: (position: string) => set({ position }),
 }))
 
 export default useMaterial

@@ -1,5 +1,5 @@
 import { AvoActionName } from "@/types/player"
-import { useAnimations, useGLTF } from "@react-three/drei"
+import { useAnimations, useGLTF, useTexture } from "@react-three/drei"
 import { useGraph } from "@react-three/fiber"
 import { useEffect, useMemo, useRef } from "react"
 import * as THREE from "three"
@@ -42,6 +42,7 @@ export default function Avo(props: JSX.IntrinsicElements["group"] & { anim: AvoA
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene])
   const { nodes } = useGraph(clone) as GLTFResult
   const { actions, mixer } = useAnimations(animations, player)
+  const shadowTexture = useTexture("/shadow.png")
 
   useEffect(() => {
     props.anim && (actions as GLTFActions)[props.anim].reset().fadeIn(0.2).play()
@@ -107,6 +108,10 @@ export default function Avo(props: JSX.IntrinsicElements["group"] & { anim: AvoA
           </group>
         </group>
       </group>
+      <mesh scale={1} position={[0, 0.2, 0]} rotation={[-1.57, 0, 0]}>
+        <circleGeometry />
+        <meshBasicMaterial map={shadowTexture} transparent={true} side={THREE.DoubleSide} opacity={0.5} />
+      </mesh>
     </group>
   )
 }

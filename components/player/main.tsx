@@ -2,10 +2,13 @@ import { useControls } from "@/hooks/useControls"
 import { database } from "@/services/firebase"
 import { AvoActionName } from "@/types/player"
 import { useFrame } from "@react-three/fiber"
-import { ref, update } from "firebase/database"
+import { ref, remove, update } from "firebase/database"
 import { useMemo, useRef } from "react"
+import { useKeyPressEvent } from "react-use"
 import * as THREE from "three"
 import Avo from "./avo"
+import useMaterial from "@/hooks/useMaterial"
+
 // XPRd0jb
 const SPEED = 0.1
 const OFFSET = 5
@@ -35,7 +38,6 @@ export default function MainPlayer(props: MainPlayerProps) {
 
     if (up || down || left || right) {
       frames.current += 1
-
       player.current.position.z += SPEED * (Number(down) - Number(up))
       player.current.position.x += SPEED * (Number(right) - Number(left))
 

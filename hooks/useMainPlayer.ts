@@ -25,8 +25,6 @@ const useMainPlayer = create<MainPlayerState>((set) => ({
       onValue(
         ref(database, `players/${publicKey}`),
         (snapshot) => {
-          console.log(snapshot.val())
-
           if (snapshot.val()) {
             set({ existed: true, username: snapshot.val().username })
           } else {

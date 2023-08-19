@@ -40,9 +40,9 @@ function Other({ player }: { player: Player }) {
     <group ref={playerRef}>
       <Avo anim={player.animation} />
       <Html position={[0, 2, 0]} center>
-        <div className="px-3 pb-2 pt-1 rounded-lg bg-base-200 select-none">
-          <div className="badge badge-accent badge-sm mt-2 font-medium">$GUAC hodler</div>
-          <span className="">{player.username}</span>
+        <div className="px-3 pb-2 pt-1 rounded-lg bg-base-200 select-none flex flex-col items-center gap-1">
+          <div className="badge badge-accent badge-sm mt-2 w-28 font-medium">$GUAC hodler</div>
+          <span className="text-center">{player.username}</span>
         </div>
       </Html>
     </group>

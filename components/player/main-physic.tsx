@@ -2,13 +2,16 @@ import { useControls } from "@/hooks/useControls"
 import { database } from "@/services/firebase"
 import { AvoActionName } from "@/types/player"
 import { useFrame } from "@react-three/fiber"
+import { CapsuleCollider, RapierRigidBody, RigidBody } from "@react-three/rapier"
 import { ref, update } from "firebase/database"
 import { useMemo, useRef } from "react"
 import * as THREE from "three"
-import Avo from "./avo"
-import { CapsuleCollider, RapierRigidBody, RigidBody } from "@react-three/rapier"
 import { Vector3 } from "three"
-// XPRd0jb
+import Avo from "./avo"
+import useMaterial from "@/hooks/useMaterial"
+import { remove } from "firebase/database"
+import { useKeyPressEvent } from "react-use"
+
 const SPEED = 10
 const OFFSET = 5
 
@@ -36,6 +39,16 @@ export default function MainPlayerPhysic(props: MainPlayerProps) {
     return a as AvoActionName
   }, [up, down, left, right, props.id])
   const frames = useRef(0)
+
+  const [position] = useMaterial((s) => [s.position])
+
+  const claimMaterial = () => {
+    console.log("claimed")
+
+    remove(ref(database, `materials/${position}`))
+  }
+
+  useKeyPressEvent(" ", claimMaterial)
 
   useFrame(({ camera }) => {
     if (!playerRef.current) return
