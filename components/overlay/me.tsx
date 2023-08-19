@@ -1,12 +1,33 @@
+import useEditUsernameModal from "@/hooks/useEditUsernameModal"
 import useMainPlayer from "@/hooks/useMainPlayer"
+import { database } from "@/services/firebase"
 import { formatAddress } from "@/utils"
 import { useWallet } from "@solana/wallet-adapter-react"
+import { onValue, ref } from "firebase/database"
 import { Edit } from "lucide-react"
 import Image from "next/image"
+import { useEffect } from "react"
 
 export default function Me() {
   const { publicKey } = useWallet()
-  const [username] = useMainPlayer((state) => [state.username])
+  const [username, title, setUsername] = useMainPlayer((state) => [state.username, state.title, state.setUsername])
+  const [opened, open, close] = useEditUsernameModal((s) => [s.opened, s.open, s.close])
+
+  useEffect(() => {
+    if (!publicKey) return
+
+    onValue(
+      ref(database, `users/${publicKey.toString()}`),
+      (snapshot) => {
+        if (snapshot.val()) {
+          setUsername(snapshot.val().username)
+        }
+      },
+      {
+        onlyOnce: true,
+      }
+    )
+  }, [])
 
   return (
     <div className="absolute top-6 left-6 bg-base-300 p-3 rounded-2xl flex gap-2 pr-3.5 select-none">
@@ -25,12 +46,15 @@ export default function Me() {
         <div className="flex flex-col">
           <div className="flex gap-2  -mt-1 items-center">
             <span className="font-bold">{username}</span>
-            <button className="btn btn-xs btn-square active:cursor-c-pointer-clicked hover:cursor-c-pointer">
+            <button
+              className="btn btn-xs btn-square active:cursor-c-pointer-clicked hover:cursor-c-pointer"
+              onClick={open}
+            >
               <Edit size={12} />
             </button>
           </div>
           <span className="text-sm text-primary-content/60">{formatAddress(publicKey.toString())}</span>
-          <div className="badge badge-accent badge-sm mt-2 font-medium">$GUAC hodler</div>
+          {title && <div className="badge badge-accent badge-sm mt-2 font-medium">{title}</div>}
         </div>
       )}
     </div>

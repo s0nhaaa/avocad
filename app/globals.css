@@ -20,21 +20,3 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
-
-.background-animate {
-  background-size: 400%;
-
-  -webkit-animation: bgAnim 3s ease infinite;
-  -moz-animation: bgAnim 3s ease infinite;
-  animation: bgAnim 3s ease infinite;
-}
-
-@keyframes bgAnim {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}

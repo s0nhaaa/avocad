@@ -9,7 +9,7 @@ type GLTFResult = GLTF & {
     Mesh_pineapple_1: THREE.Mesh
   }
   materials: {
-    yellow: THREE.MeshStandardMaterial
+    "yellow.001": THREE.MeshStandardMaterial
     green: THREE.MeshStandardMaterial
   }
 }
@@ -18,7 +18,7 @@ export function Pineapple(props: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF("/models/foods/pineapple.glb") as GLTFResult
   return (
     <group {...props} dispose={null}>
-      <mesh geometry={nodes.Mesh_pineapple.geometry} material={materials.yellow} />
+      <mesh geometry={nodes.Mesh_pineapple.geometry} material={materials["yellow.001"]} />
       <mesh geometry={nodes.Mesh_pineapple_1.geometry} material={materials.green} />
     </group>
   )

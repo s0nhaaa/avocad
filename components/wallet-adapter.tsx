@@ -10,7 +10,7 @@ interface WalletAdapterProps {
 }
 
 export function WalletAdapter(props: WalletAdapterProps) {
-  const endpoint = useMemo(() => "https://devnet.helius-rpc.com/?api-key=c961fbdd-f1f5-4d6d-beea-d515405f3e54", [])
+  const endpoint = useMemo(() => "https://rpc.helius.xyz/?api-key=1ba00d42-c9d3-4459-89b1-2c48142aacbc", [])
 
   const wallets = useMemo(
     () => [new PhantomWalletAdapter(), new BackpackWalletAdapter()],

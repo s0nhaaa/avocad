@@ -13,6 +13,7 @@ export type Player = {
   username: string
   animation: AvoActionName
   address: string
+  title: string
 }
 
 export type Players = {

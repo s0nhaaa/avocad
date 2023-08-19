@@ -1,6 +1,11 @@
+import useClaim from "@/hooks/useClaim"
+import useMainPlayer from "@/hooks/useMainPlayer"
 import useRecipe from "@/hooks/useRecipe"
+import { database } from "@/services/firebase"
+import { useWallet } from "@solana/wallet-adapter-react"
+import { increment, ref, update } from "firebase/database"
 import { Variants, motion } from "framer-motion"
-import { Bell, Check, Clock } from "lucide-react"
+import { Bell, Check, Clock, Plus } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 
@@ -16,8 +21,16 @@ const variants: Variants = {
 }
 
 export default function Recipe() {
-  const [recipe, randomRecipe, setIsTimeout] = useRecipe((s) => [s.recipe, s.randomRecipe, s.setIsTimeout])
+  const [recipe, randomRecipe, setIsTimeout, setIsDone] = useRecipe((s) => [
+    s.recipe,
+    s.randomRecipe,
+    s.setIsTimeout,
+    s.setIsDone,
+  ])
   const [countdown, setCountdown] = useState(0)
+  const [materials, deleteClaimed] = useClaim((s) => [s.materials, s.deleteClaimed])
+  const { publicKey } = useWallet()
+  const username = useMainPlayer((s) => s.username)
 
   useEffect(() => {
     if (!recipe) return
@@ -41,6 +54,23 @@ export default function Recipe() {
     setCountdown(recipe.time)
   }, [recipe])
 
+  useEffect(() => {
+    if (!materials) return
+    if (!recipe) return
+    if (!publicKey) return
+
+    const intersection = new Set(materials.filter((element) => recipe.materials.includes(element)))
+    if (intersection.size === recipe.materials.length) {
+      deleteClaimed()
+      setIsDone(true)
+      update(ref(database, `leaderboard/${publicKey.toString()}`), {
+        score: increment(recipe.score),
+        address: publicKey.toString(),
+        username,
+      })
+    }
+  }, [materials, recipe])
+
   return (
     <motion.div
       variants={variants}
@@ -53,10 +83,16 @@ export default function Recipe() {
             <span className="btn btn-xs normal-case btn-primary">
               <Bell className="animate-swing origin-top" size={14} /> New Recipe
             </span>
-            <span className="px-2 bg-secondary gap-1 w-13 flex items-center rounded-lg">
-              <Clock size={14} />
-              <span className="text-sm font-medium w-4 text-center">{countdown}</span>
-            </span>
+            <div className="flex gap-2">
+              <span className="px-2 bg-success gap-1 w-[54px] flex items-center rounded-lg">
+                <Plus size={14} />
+                <span className="text-sm font-medium w-4 text-center">{recipe.score}</span>
+              </span>
+              <span className="px-2 bg-secondary gap-1 w-[54px] flex items-center rounded-lg">
+                <Clock size={14} />
+                <span className="text-sm font-medium w-4 text-center">{countdown}</span>
+              </span>
+            </div>
           </div>
           <div className="flex mb-2">
             <span className="font-medium ">{recipe.name}</span>
@@ -68,7 +104,7 @@ export default function Recipe() {
                 className="w-10 h-10 object-cover rounded-full bg-red-50 ring ring-secondary"
                 width={64}
                 height={64}
-                alt="avotar"
+                alt={recipe.name}
               />
             </div>
             <div className="divider divider-horizontal mx-1"></div>
@@ -81,11 +117,13 @@ export default function Recipe() {
                       className="w-10 h-10 object-cover rounded-full bg-red-50 ring"
                       width={64}
                       height={64}
-                      alt="avotar"
+                      alt={material}
                     />
-                    <div className=" absolute -right-0.5 p-0.5 bg-success rounded-full">
-                      <Check size={14} />
-                    </div>
+                    {materials.includes(material) && (
+                      <div className=" absolute -right-0.5 p-0.5 bg-success rounded-full">
+                        <Check size={14} />
+                      </div>
+                    )}
                     <span className="text-xs capitalize">{material}</span>
                   </div>
                 ))}

@@ -1,6 +1,5 @@
 import useLogin from "@/hooks/useLogin"
 import useMainPlayer from "@/hooks/useMainPlayer"
-import { formatAddress } from "@/utils"
 import { useWallet } from "@solana/wallet-adapter-react"
 import { useWalletModal } from "@solana/wallet-adapter-react-ui"
 import clsx from "clsx"
@@ -20,22 +19,15 @@ export default function Login() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicKey, user.existed])
 
-  useEffect(() => {
-    if (!publicKey) return
-
-    user.create(formatAddress(publicKey.toString()), publicKey.toString())
-    login()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [publicKey])
-
   return (
     <>
       {!logedIn && (
         <div className={clsx("modal", "modal-open")}>
           <div className="modal-box ">
             <h3 className="font-bold text-lg">Guac morning 🥑!</h3>
-            <p className="pt-4">
-              Just one step before you in. Make sure you&apos;re on <kbd className="kbd kbd-md">Devnet</kbd>
+            <p className="pt-4 text-primary-content/60">
+              Let focking $GUAC. Go collect the ingredients to cook a parfaite healthy avocado. Get rank and rewards in
+              $GUAC!
             </p>
 
             <div className="modal-action">

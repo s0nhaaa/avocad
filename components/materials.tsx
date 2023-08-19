@@ -4,6 +4,7 @@ import { getKeyString } from "@/utils"
 import { Float, Html, useTexture } from "@react-three/drei"
 import { CapsuleCollider, CollisionPayload, RigidBody } from "@react-three/rapier"
 import { ReactNode, useEffect, useState } from "react"
+import { DoubleSide } from "three"
 import { Apple } from "./foods/apple"
 import { Avocado } from "./foods/avocado"
 import { Bacon } from "./foods/bacon"
@@ -30,7 +31,6 @@ import { Pineapple } from "./foods/pineapple"
 import { Pizzabox } from "./foods/pizzabox"
 import { Plate } from "./foods/plate"
 import { Tomato } from "./foods/tomato"
-import { BackSide, DoubleSide } from "three"
 
 export const MATERIALS: Record<string, ReactNode> = {
   apple: <Apple />,
@@ -93,6 +93,7 @@ export function Material(props: MaterialProps) {
       setPosition("e")
       setEntered(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
@@ -128,9 +129,10 @@ export function Material(props: MaterialProps) {
   )
 }
 
-type MaterialsProps = {
+interface MaterialsProps {
   materials: MaterialsType | undefined
 }
+
 export default function Materials(props: MaterialsProps) {
   return (
     <>

@@ -1,6 +1,6 @@
 import { database } from "@/services/firebase"
 import usePlayerStore from "@/stores/player"
-import { OrbitControls, PerspectiveCamera } from "@react-three/drei"
+import { PerspectiveCamera } from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { Physics } from "@react-three/rapier"
 import { useWallet } from "@solana/wallet-adapter-react"
@@ -26,7 +26,7 @@ export default function Scene() {
       setMaterials(snapshot.val())
     })
 
-    window.addEventListener("beforeunload", (event) => {
+    window.addEventListener("beforeunload", () => {
       remove(ref(database, `players/${publicKey?.toString()}`))
     })
 
@@ -36,23 +36,19 @@ export default function Scene() {
   return (
     <div className="w-screen h-screen bg-gradient-to-b from-emerald-300 from-10% to-emerald-500 to-90%">
       <Canvas>
-        {/* <OrbitControls /> */}
         <ambientLight intensity={2} />
         <PerspectiveCamera makeDefault position={[0, 5, 10]} castShadow />
-
         <Suspense>
           <Physics gravity={[0, -9.82, 0]}>
             <Materials materials={materials} />
-
             <MainPlayerPhysic id={publicKey?.toString()} />
             <MapPhysic position={[0, -1, 0]} />
           </Physics>
         </Suspense>
-
         <OtherPlayers players={players} mainPlayerId={publicKey?.toString()} />
       </Canvas>
 
-      <RecipeManager />
+      <RecipeManager materials={materials} />
     </div>
   )
 }

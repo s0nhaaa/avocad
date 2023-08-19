@@ -1,8 +1,10 @@
+import useInput from "@/hooks/useInput"
 import useMainPlayer from "@/hooks/useMainPlayer"
 import { database } from "@/services/firebase"
 import { onValue, orderByChild, push, query, ref, update } from "firebase/database"
+import { keys, last } from "lodash-es"
 import { Send } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 export interface Message {
   name: string
@@ -15,6 +17,8 @@ export default function Chat() {
   const [messages, setMessages] = useState<Record<string, Message>>({})
   const bottomRef = useRef<HTMLDivElement>(null)
   const [username] = useMainPlayer((state) => [state.username])
+  const bars = useMemo(() => new Audio("/bars.mp3"), [])
+  const [startType, endType] = useInput((s) => [s.startType, s.endType])
 
   const sendMessage = async (message: string) => {
     if (!message) return
@@ -30,6 +34,10 @@ export default function Chat() {
   useEffect(() => {
     onValue(query(ref(database, "chats"), orderByChild("timestamp")), (snapshot) => {
       setMessages(snapshot.val())
+      const senders = keys(snapshot.val())
+      if (snapshot.val() && snapshot.val()[senders[senders.length - 1]].message.toLowerCase().includes("bars")) {
+        bars.play()
+      }
     })
   }, [])
 
@@ -50,6 +58,8 @@ export default function Chat() {
         </div>
         <div className="absolute bottom-0 flex gap-2 w-full">
           <input
+            onFocus={startType}
+            onBlur={endType}
             type="text"
             placeholder="Type here"
             className="input input-bordered w-full"

@@ -11,6 +11,8 @@ import Avo from "./avo"
 import useMaterial from "@/hooks/useMaterial"
 import { remove } from "firebase/database"
 import { useKeyPressEvent } from "react-use"
+import useClaim from "@/hooks/useClaim"
+import useInput from "@/hooks/useInput"
 
 const SPEED = 10
 const OFFSET = 5
@@ -27,9 +29,12 @@ export default function MainPlayerPhysic(props: MainPlayerProps) {
   const playerRef = useRef<THREE.Group | null>(null)
   const physicRef = useRef<RapierRigidBody>(null)
   const { up, down, left, right } = useControls()
+  const claim = useClaim((s) => s.claim)
+  const [typing] = useInput((s) => [s.typing])
 
   const anim = useMemo<AvoActionName>(() => {
     let a = up || down || left || right ? "run" : "idle"
+    if (typing) a = "idle"
 
     props.id &&
       update(ref(database, `players/${props.id}`), {
@@ -40,10 +45,10 @@ export default function MainPlayerPhysic(props: MainPlayerProps) {
   }, [up, down, left, right, props.id])
   const frames = useRef(0)
 
-  const [position] = useMaterial((s) => [s.position])
+  const [position, material] = useMaterial((s) => [s.position, s.material])
 
   const claimMaterial = () => {
-    console.log("claimed")
+    claim(material)
 
     remove(ref(database, `materials/${position}`))
   }
@@ -53,6 +58,7 @@ export default function MainPlayerPhysic(props: MainPlayerProps) {
   useFrame(({ camera }) => {
     if (!playerRef.current) return
     if (!physicRef.current) return
+    if (typing) return
 
     if (up || down || left || right) {
       frames.current += 1

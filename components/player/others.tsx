@@ -28,6 +28,8 @@ function Other({ player }: { player: Player }) {
   const playerRef = useRef<Group>(null)
 
   useFrame(() => {
+    if (!player.position) return
+
     if (playerRef.current) {
       nextPosition.fromArray([player.position.x, player.position.y, player.position.z])
       nextQuaternion.fromArray([player.quaternion.x, player.quaternion.y, player.quaternion.z, player.quaternion.w])
@@ -41,7 +43,7 @@ function Other({ player }: { player: Player }) {
       <Avo anim={player.animation} />
       <Html position={[0, 2, 0]} center>
         <div className="px-3 pb-2 pt-1 rounded-lg bg-base-200 select-none flex flex-col items-center gap-1">
-          <div className="badge badge-accent badge-sm mt-2 w-28 font-medium">$GUAC hodler</div>
+          {player.title && <div className="badge badge-accent badge-sm mt-2 w-28 font-medium">{player.title}</div>}
           <span className="text-center">{player.username}</span>
         </div>
       </Html>
