@@ -33,7 +33,7 @@ export default function Ranking() {
               {leaderboard.map((lb, index) => (
                 <tr key={lb.address}>
                   <td className="text-3xl text-center">{MEDAL_MAP[index + 1]}</td>
-                  <th>{lb.username}</th>
+                  <th className="text-primary-content">{lb.username}</th>
                   <td className="text-center">
                     <div className="badge badge-neutral">{lb.score}</div>
                   </td>

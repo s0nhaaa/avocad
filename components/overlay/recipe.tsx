@@ -95,7 +95,7 @@ export default function Recipe() {
             </div>
           </div>
           <div className="flex mb-2">
-            <span className="font-medium ">{recipe.name}</span>
+            <span className="font-medium text-primary-content">{recipe.name}</span>
           </div>
           <div className="flex flex-row w-full">
             <div className="grid flex-grow rounded-box place-items-center">
@@ -114,7 +114,7 @@ export default function Recipe() {
                   <div key={index} className="relative flex flex-col items-center gap-2 p-2 bg-base-300 rounded-lg">
                     <Image
                       src={`/food-preview/${material}.png`}
-                      className="w-10 h-10 object-cover rounded-full bg-red-50 ring"
+                      className="w-10 h-10 object-cover rounded-full ring"
                       width={64}
                       height={64}
                       alt={material}
@@ -124,7 +124,7 @@ export default function Recipe() {
                         <Check size={14} />
                       </div>
                     )}
-                    <span className="text-xs capitalize">{material}</span>
+                    <span className="text-xs capitalize text-primary-content/80">{material}</span>
                   </div>
                 ))}
               </div>

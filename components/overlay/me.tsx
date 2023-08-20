@@ -45,7 +45,7 @@ export default function Me() {
       {publicKey && (
         <div className="flex flex-col">
           <div className="flex gap-2  -mt-1 items-center">
-            <span className="font-bold">{username}</span>
+            <span className="font-bold text-primary-content">{username}</span>
             <button
               className="btn btn-xs btn-square active:cursor-c-pointer-clicked hover:cursor-c-pointer"
               onClick={open}

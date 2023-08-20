@@ -51,7 +51,7 @@ export default function Chat() {
         <div className="w-full flex flex-col overflow-auto h-[calc(100%-60px)] rounded-lg p-1">
           {messages &&
             Object.values(messages).map((message, index) => (
-              <span ref={bottomRef} className="" key={index}>
+              <span ref={bottomRef} className=" text-primary-content" key={index}>
                 <span className="font-bold text-accent">{message.name}: </span> {message.message}
               </span>
             ))}
